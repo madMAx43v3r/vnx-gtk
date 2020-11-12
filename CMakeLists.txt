@@ -9,7 +9,7 @@ find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GTK3 REQUIRED gtkmm-3.0)
 
-add_library(vnx_gtk
+add_library(vnx_gtk SHARED
 	${GENERATED_SOURCE_FILES}
 )
 
