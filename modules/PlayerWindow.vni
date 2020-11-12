@@ -1,0 +1,8 @@
+package vnx.gtk;
+
+module PlayerWindow {
+	
+	
+	void handle(vnx.RecorderStatus sample);
+	
+}

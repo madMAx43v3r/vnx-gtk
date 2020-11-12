@@ -16,12 +16,14 @@
 namespace vnx {
 namespace gtk {
 
-/** \brief Base class to implement a VNX GTK window.
+/** \brief Base class to implement a VNX GTK Window.
  *
  */
 template<typename TModule>
 class WindowModule : public Gtk::Window, public TModule {
 public:
+	typedef WindowModule Super;
+
 	WindowModule(const std::string& vnx_name_)
 		:	TModule(vnx_name_)
 	{
@@ -36,7 +38,7 @@ protected:
 	{
 		load_dispatcher.emit();
 
-		TModule::main();
+		Module::main();
 	}
 
 	void handle(std::shared_ptr<const vnx::Message> msg) override
@@ -44,20 +46,20 @@ protected:
 		if(auto task = std::dynamic_pointer_cast<const vnx::Task>(msg))
 		{
 			// handle tasks in VNX thread
-			TModule::handle(task);
+			Module::handle(task);
 			return;
 		}
 		if(auto sample = std::dynamic_pointer_cast<const vnx::Sample>(msg))
 		{
 			if(sample->topic == vnx::shutdown) {
-				Window::close();
-				TModule::exit();
+				Gtk::Window::close();
+				Module::exit();
 			}
 		}
 		{
 			// send message to GTK thread
-			std::unique_lock<std::mutex> lock(TModule::vnx_mutex);
-			while(TModule::vnx_do_run() && next_msg) {
+			std::unique_lock<std::mutex> lock(msg_mutex);
+			while(Module::vnx_do_run() && next_msg) {
 				msg_condition.wait(lock);
 			}
 			next_msg = msg;
@@ -69,7 +71,7 @@ protected:
 	{
 		std::shared_ptr<const vnx::Message> msg;
 		{
-			std::lock_guard<std::mutex> lock(TModule::vnx_mutex);
+			std::lock_guard<std::mutex> lock(msg_mutex);
 			msg = next_msg;
 			next_msg = nullptr;
 		}
@@ -77,9 +79,9 @@ protected:
 
 		if(msg) {
 			try {
-				TModule::handle(msg);
+				Module::handle(msg);
 			} catch(const std::exception& ex) {
-				TModule::log(WARN) << ex.what();
+				Module::log(Module::WARN) << ex.what();
 			}
 		}
 	}
@@ -87,10 +89,12 @@ protected:
 	virtual void on_vnx_load() {}
 
 private:
-	Glib::Dispatcher msg_dispatcher;
-	Glib::Dispatcher load_dispatcher;
+	std::mutex msg_mutex;
 	std::condition_variable msg_condition;
 	std::shared_ptr<const vnx::Message> next_msg;
+
+	Glib::Dispatcher msg_dispatcher;
+	Glib::Dispatcher load_dispatcher;
 
 };
 
