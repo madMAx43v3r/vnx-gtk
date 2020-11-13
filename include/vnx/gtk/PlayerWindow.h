@@ -255,7 +255,15 @@ protected:
 		bool is_good = false;
 		try {
 			auto info = player_sync.get_info();
-			info_display.set_data(info.to_object());
+			std::map<std::string, vnx::Object> topics;
+			for(const auto& topic : info.topics) {
+				vnx::Object tmp = topic.to_object();
+				tmp.erase("name");
+				topics[topic.name] = tmp;
+			}
+			auto object = info.to_object();
+			object["topics"] = topics;
+			info_display.set_data(object);
 			is_good = true;
 		}
 		catch(...) {
