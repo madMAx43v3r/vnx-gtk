@@ -108,6 +108,11 @@ private:
 					value = tmp;
 				}
 			}
+			if(value.is_map()) {
+				vnx::Object tmp;
+				value.to(tmp.field);
+				value = tmp;
+			}
 			if(iter != options.end()) {
 				const auto& opt = iter->second;
 				if(!opt.key_name.empty()) {

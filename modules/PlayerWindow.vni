@@ -2,7 +2,25 @@ package vnx.gtk;
 
 module PlayerWindow {
 	
+	vnx.TopicPtr topic_status = "vnx.player_status";
 	
-	void handle(vnx.RecorderStatus sample);
+	string player_name = "Player";
+	
+	int width = 600;
+	int height = -1;
+	
+	vector<string> files;						// list of record files to play back
+	
+	double play_speed = 1;						// initial play speed
+	
+	bool is_blocking = false;					// if to publish in blocking mode
+	bool is_repeat = false;						// if to play in a loop
+	bool is_autostart = false;					// if to start playing automatically
+	bool is_autoclose = false;					// if to exit player when reaching end of file
+	
+	map<vnx.TopicPtr, vnx.TopicPtr> topic_map;			// map for topic re-mapping (old => new)
+	
+	
+	void handle(vnx.PlayerStatus sample);
 	
 }
