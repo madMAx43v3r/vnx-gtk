@@ -163,12 +163,8 @@ public:
 
 		// --- status bar ---
 		bottom_separator.set_margin_top(2);
-		status.info.set_text("Open file(s) first.");
 		status.info.set_hexpand();
 		status.info.set_halign(Gtk::ALIGN_START);
-		status.speed.set_text("?");
-		status.bandwidth.set_text("?");
-		status.state.set_text("?");
 		{
 			int i = 0;
 			status.bar.attach(status.info, i++, 0, 1, 1);
@@ -212,6 +208,13 @@ protected:
 
 	bool on_render()
 	{
+		if(!player_status) {
+			status.info.set_text("Open file(s) first.");
+			status.speed.set_text("?");
+			status.bandwidth.set_text("?");
+			status.state.set_text("?");
+			return true;
+		}
 		const double percent = int(1000 * player_status->progress) / 10.;
 		{
 			const auto delta = vnx::get_wall_time_millis() - disable_update;
