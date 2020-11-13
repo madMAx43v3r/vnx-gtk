@@ -283,10 +283,11 @@ protected:
 
 	void on_open()
 	{
-		Gtk::FileChooserDialog dialog(*this, "Open File ...", Gtk::FILE_CHOOSER_ACTION_OPEN);
+		Gtk::FileChooserDialog dialog(*this, "Open File(s) ...", Gtk::FILE_CHOOSER_ACTION_OPEN);
 		dialog.add_button("Cancel", Gtk::RESPONSE_CANCEL);
 		dialog.add_button("Open", Gtk::RESPONSE_ACCEPT);
-		dialog.add_filter(get_file_filter_dat());
+		dialog.set_filter(get_file_filter_dat());
+		dialog.set_select_multiple(true);
 		if(dialog.run() != Gtk::RESPONSE_ACCEPT) {
 			return;
 		}
