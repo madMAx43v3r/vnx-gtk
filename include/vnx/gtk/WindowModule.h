@@ -49,22 +49,19 @@ protected:
 			Module::handle(task);
 			return;
 		}
-		if(auto sample = std::dynamic_pointer_cast<const vnx::Sample>(msg))
-		{
-			if(sample->topic == vnx::shutdown) {
-				Gtk::Window::close();
-				Module::exit();
-			}
-		}
 		{
 			// send message to GTK thread
-			std::unique_lock<std::mutex> lock(msg_mutex);
-			while(Module::vnx_do_run() && next_msg) {
-				msg_condition.wait(lock);
-			}
+			std::lock_guard<std::mutex> lock(msg_mutex);
 			next_msg = msg;
 		}
-		msg_dispatcher.emit();
+		msg_dispatcher.emit();	// notify GTK thread of new message
+		{
+			// wait for GTK thread to finish processing the message
+			std::unique_lock<std::mutex> lock(msg_mutex);
+			while(next_msg && Module::vnx_do_run()) {
+				msg_condition.wait(lock);
+			}
+		}
 	}
 
 	virtual void on_vnx_msg()
@@ -73,10 +70,7 @@ protected:
 		{
 			std::lock_guard<std::mutex> lock(msg_mutex);
 			msg = next_msg;
-			next_msg = nullptr;
 		}
-		msg_condition.notify_all();
-
 		if(msg) {
 			try {
 				Module::handle(msg);
@@ -84,6 +78,17 @@ protected:
 				Module::log(Module::WARN) << ex.what();
 			}
 		}
+		if(auto sample = std::dynamic_pointer_cast<const vnx::Sample>(msg)) {
+			if(sample->topic == vnx::shutdown) {
+				Gtk::Window::close();
+			}
+		}
+		// notify VNX thread that we are finished processing the message
+		{
+			std::lock_guard<std::mutex> lock(msg_mutex);
+			next_msg = nullptr;
+		}
+		msg_condition.notify_all();
 	}
 
 	virtual void on_vnx_load() {}
