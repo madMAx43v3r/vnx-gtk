@@ -287,11 +287,6 @@ protected:
 		}
 	}
 
-	void on_hide() override
-	{
-		info_display.hide();
-	}
-
 	void on_open()
 	{
 		Gtk::FileChooserDialog dialog(*this, "Open File(s) ...", Gtk::FILE_CHOOSER_ACTION_OPEN);
