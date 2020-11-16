@@ -41,6 +41,12 @@ protected:
 		Module::main();
 	}
 
+	void on_hide() override
+	{
+		Gtk::Window::on_hide();
+		Module::exit();
+	}
+
 	void handle(std::shared_ptr<const vnx::Message> msg) override
 	{
 		if(auto task = std::dynamic_pointer_cast<const vnx::Task>(msg))
