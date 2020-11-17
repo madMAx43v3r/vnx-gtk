@@ -43,8 +43,8 @@ protected:
 
 	void on_hide() override
 	{
-		Gtk::Window::on_hide();
 		Module::exit();
+		Gtk::Window::on_hide();
 	}
 
 	void handle(std::shared_ptr<const vnx::Message> msg) override
