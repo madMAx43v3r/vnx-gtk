@@ -1,0 +1,3 @@
+package vnx.gtk;
+
+abstract module Module implements vnx.ModuleInterface;

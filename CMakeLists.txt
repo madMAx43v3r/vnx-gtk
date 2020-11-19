@@ -11,6 +11,7 @@ pkg_check_modules(GTK3 REQUIRED gtkmm-3.0)
 
 add_library(vnx_gtk SHARED
 	${GENERATED_SOURCE_FILES}
+	src/Module.cpp
 )
 
 target_include_directories(vnx_gtk
