@@ -16,9 +16,12 @@ namespace gtk {
 
 class ObjectDisplay : public Gtk::Dialog {
 public:
-	ObjectDisplay(Gtk::Window& parent, const std::string& title)
+	ObjectDisplay(	Gtk::Window& parent,
+					const std::string& title,
+					bool is_modal = false)
 	{
 		set_transient_for(parent);
+		set_modal(is_modal);
 		set_default_size(400, -1);
 		set_title(title);
 

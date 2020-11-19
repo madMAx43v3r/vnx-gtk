@@ -53,17 +53,14 @@ int main(int argc, char** argv)
 
 	auto app = Gtk::Application::create("vnx.gtk.player");
 
-	vnx::Handle<vnx::gtk::PlayerWindow> module = new vnx::gtk::PlayerWindow("PlayerWindow");
+	auto module = new vnx::gtk::PlayerWindow("PlayerWindow");
 	vnx::read_config("files", module->files);
 	vnx::read_config("repeat", module->is_repeat);
 	vnx::read_config("blocking", module->is_blocking);
 	vnx::read_config("speed", module->play_speed);
 
-	auto window = module.shared_ptr();
-	module.start();
-
-	const int ret = app->run(*window);
-	window = nullptr;
+	const int ret = app->run(*module);
+	delete module;
 	vnx::close();
 	return ret;
 }

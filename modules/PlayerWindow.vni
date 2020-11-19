@@ -1,6 +1,6 @@
 package vnx.gtk;
 
-module PlayerWindow {
+module PlayerWindow extends Module {
 	
 	vnx.TopicPtr topic_status = "vnx.player_status";
 	
