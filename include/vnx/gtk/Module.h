@@ -42,7 +42,10 @@ private:
 
 	void on_vnx_notify();
 
+	void on_vnx_timer();
+
 private:
+	sigc::slot<void> timer_slot;
 	Glib::Dispatcher dispatcher;
 
 };

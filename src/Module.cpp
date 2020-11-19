@@ -14,6 +14,7 @@ namespace gtk {
 Module::Module(const std::string& name)
 	:	ModuleBase(name)
 {
+	timer_slot = sigc::mem_fun(*this, &Module::on_vnx_timer);
 	dispatcher.connect(sigc::mem_fun(*this, &Module::on_vnx_notify));
 }
 
@@ -36,6 +37,7 @@ void Module::add_window(Gtk::Window& parent, bool is_transient, bool is_modal)
 void Module::on_show()
 {
 	vnx_setup();
+	on_vnx_notify();
 	Gtk::Window::on_show();
 }
 
@@ -63,7 +65,15 @@ void Module::notify(std::shared_ptr<Pipe> pipe)
 
 void Module::on_vnx_notify()
 {
-	vnx_process(false);
+	const auto timeout_us = vnx_process(false);
+	if(timeout_us >= 0) {
+		Glib::signal_timeout().connect_once(timer_slot, timeout_us / 1000, Glib::PRIORITY_LOW);
+	}
+}
+
+void Module::on_vnx_timer()
+{
+	on_vnx_notify();
 }
 
 
