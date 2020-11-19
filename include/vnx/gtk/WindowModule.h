@@ -44,6 +44,11 @@ protected:
 	void on_hide() override
 	{
 		Module::exit();
+		{
+			std::lock_guard<std::mutex> lock(msg_mutex);
+			next_msg = nullptr;
+		}
+		msg_condition.notify_all();
 		Gtk::Window::on_hide();
 	}
 
