@@ -61,6 +61,7 @@ int main(int argc, char** argv)
 
 	const int ret = app->run(*module);
 	delete module;
+
 	vnx::close();
 	return ret;
 }
