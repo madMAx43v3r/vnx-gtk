@@ -1,0 +1,7 @@
+Package: vnx-gtk
+Section: base
+Priority: optional
+Depends: vnx-base (>=1.8.2), libgtkmm-3.0-dev
+Maintainer: Max Wittal <wittal@neobotix.de>
+Description: GTK addons for VNX Middleware
+Architecture: all

@@ -1,8 +1,12 @@
 #!/bin/bash
 
+set -e
+
 VERSION=$(cat VERSION)
 ARCH=$(uname -m)
-DST=vnx-addons
+DST=vnx-gtk
+
+./codegen.sh
 
 rm -rf $DST
 mkdir -p $DST/DEBIAN
