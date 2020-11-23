@@ -60,11 +60,14 @@ void Module::vnx_restart()
 void Module::notify(std::shared_ptr<Pipe> pipe)
 {
 	Super::notify(pipe);
-	dispatcher.emit();
+	if(!is_notified.exchange(true)) {
+		dispatcher.emit();
+	}
 }
 
 void Module::on_vnx_notify()
 {
+	is_notified = false;
 	const auto timeout_us = vnx_process(false);
 	if(timeout_us >= 0) {
 		Glib::signal_timeout().connect_once(timer_slot, timeout_us / 1000, Glib::PRIORITY_LOW);

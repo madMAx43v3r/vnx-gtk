@@ -10,6 +10,7 @@
 
 #include <vnx/ModuleBase.h>
 
+#include <atomic>
 #include <gtkmm.h>
 
 
@@ -47,6 +48,8 @@ private:
 private:
 	sigc::slot<void> timer_slot;
 	Glib::Dispatcher dispatcher;
+
+	std::atomic_bool is_notified {false};
 
 };
 
