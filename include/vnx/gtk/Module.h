@@ -29,6 +29,8 @@ public:
 
 	void add_window(Gtk::Window& parent, bool is_modal = false, bool is_transient = false);
 
+	int64_t vnx_poll_interval_ms = 10;		///< Polling interval for VNX messages [ms]
+
 protected:
 	void on_show() override;
 
@@ -39,17 +41,7 @@ protected:
 	void vnx_restart() override;
 
 private:
-	void notify(std::shared_ptr<Pipe> pipe) override;
-
-	void on_vnx_notify();
-
-	void on_vnx_timer();
-
-private:
-	sigc::slot<void> timer_slot;
-	Glib::Dispatcher dispatcher;
-
-	std::atomic_bool is_notified {false};
+	bool on_vnx_poll();
 
 };
 
