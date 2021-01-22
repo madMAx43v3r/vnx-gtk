@@ -25,4 +25,5 @@ add_executable(vnxgtkplayer src/vnxgtkplayer.cpp)
 
 target_link_libraries(vnxgtkplayer vnx_gtk)
 
+install(TARGETS vnx_gtk DESTINATION lib)
 install(TARGETS vnxgtkplayer DESTINATION bin)
