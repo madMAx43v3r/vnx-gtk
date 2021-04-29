@@ -73,6 +73,7 @@ public:
 		} else {
 			set_show_expanders(false);
 		}
+		show_all();
 	}
 
 private:
